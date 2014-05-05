@@ -1,0 +1,58 @@
+body{
+	background: url(http://37.media.tumblr.com/83906d764e9366d36b32cd352e317d6b/tumblr_mr0j5p7OCs1s2xab7o1_400.gif);
+	background-size: cover;
+}
+
+#modular_clock{
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:100px;
+	width: 1200px;
+	height:650px;
+	background: rgba(0, 0, 0, 0.5);
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+}
+
+div.third{
+	display:inline-block;
+	margin: 40px;
+	width:320px;
+	height:570px;
+	float:left;
+	border-radius: 10px;
+}
+
+#hours{
+		background: rgba(256, 0, 0, 0.25);
+}
+
+#mins{
+		background: rgba(0, 256, 0, 0.25);
+}
+
+#secs{
+		background: rgba(0, 0, 256, 0.25);
+}
+
+div.box{
+	display:inline-block;
+	margin:6px;
+	width: 41px;
+	height: 41px;
+	background: rgba(0, 0, 0, 0.25);
+	border-radius: 5px;
+
+}
+
+div.box_mod{
+	width:100px;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top: 20px;
+}
+
+div.box_on{
+		background: rgba(256, 256, 256, 0.25);
+}
