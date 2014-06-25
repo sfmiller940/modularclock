@@ -2,33 +2,62 @@ var clockID = 0;
 var times = new Array(3);
 var fiftynine=59;
 var twentyfour=24;
-
+var timeVars = ['secs', 'mins', 'hours'];
 
 function modular_clock_init(){
 	
-	//Add divs for hours, mins, secs.
-	$('#modular_clock').append('<div id="hours" class="third"></div><div id="mins" class="third"></div><div id="secs" class="third"></div>');
-	for (i=0; i < 54; i++){
-		$('#hours').append('<div class="box box_hour"></div>');
-		$('#mins').append('<div class="box box_mins"></div>');
-		$('#secs').append('<div class="box box_secs"></div>');
+	//plan to loop a lot-- make generic iterator that accept functions
+	function timeVarsLoop(func){
+		$.each(timeVars, function(index, value) { 	
+			func(value);
+		});
 	}
-
-	//Add select inputs.
-	$('#hours').append('<div class="box_mod"><select id="mod_hours"><option value="10">10</option><option value="9">9</option><option value="8">8</option><option value="7">7</option><option value="6">6</option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option></select></div>');
-	$('#mins').append('<div class="box_mod"><select id="mod_mins"><option value="10">10</option><option value="9">9</option><option value="8">8</option><option value="7">7</option><option value="6">6</option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option></select></div>');
-	$('#secs').append('<div class="box_mod"><select id="mod_secs"><option value="10">10</option><option value="9">9</option><option value="8">8</option><option value="7">7</option><option value="6">6</option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option></select></div>');
 	
-	$('#mod_hours, #mod_mins, #mod_secs').change(function(){modular_clock_update(1);});
+	//Add divs for hours, mins, secs.	
+	$('#modular_clock').append('<div id="hours" class="third"></div><div id="mins" class="third"></div><div id="secs" class="third"></div>');
+	
+	/*
+	for (i=0; i < 54; i++){
+		$.each(timeVars, function(index, value) { 	
+			$('#'+value).append('<div class="box box_' + value + '"></div>')
+		});
+	}
+	*/
+	
+	var a = function addDivs(id) {
+		$('#'+id).append('<div class="box box_' + id + '"></div>')
+	}
+	for (i=0; i < 54; i++){
+		timeVarsLoop(a);
+	}
+	
+	
+	//Add select inputs.
+	var b = function selectBox(id) {
+		var options
+		for (i=10; i>1; i--) {options += '<option value="' + i + '">' + i + '</option>';}
+		dv = '<div class="box_mod"><select id="mod_' + id + '">' + options + '</div>';
+		$('#'+id).append(dv);
+	}
+	
+	timeVarsLoop(b);
+	/*
+	$.each(timeVars, function(index, value) { 	
+		selectBox(value);
+	});
+	*/
+	
+
 	
 	//Start the clock
 	modular_clock_update(1);
 }
 
 
-
 function modular_clock_update( refresh ){
-
+	
+	//alert('modular_clock_update');
+	
 	//Clear the clock.
 	if(clockID) {
 	  clearTimeout(clockID);
@@ -38,9 +67,9 @@ function modular_clock_update( refresh ){
 	//If refresh == 1, reset styles.
 	if (refresh == 1){
 		for (i=0; i < 54; i++){
-			document.getElementById("secs").childNodes[ i ].className="box box_secs";
-			document.getElementById("mins").childNodes[ i ].className="box box_mins";
-			document.getElementById("hours").childNodes[ i ].className="box box_hours";
+			$.each(timeVars, function(index, value) { 	
+				document.getElementById(value).childNodes[i].className="box box_"+value;
+			});
 		}
 	}
 
@@ -49,49 +78,64 @@ function modular_clock_update( refresh ){
 	times[0] = tDate.getSeconds().toString( $('#mod_secs').val() );
 	times[1] = tDate.getMinutes().toString( $('#mod_mins').val() );
 	times[2] = tDate.getHours().toString( $('#mod_hours').val() );
+	
 	for(i=0;i<3;i++){
 		for (j=times[i].length;j<6;j++){
-		times[i] = "0" + times[i];
-	        }
-	   }
-
-	//Update seconds 'ones' column.
-	for(i=0; i < ( $('#mod_secs').val() - 1 ); i++){
-		if ( i < times[0][5] ) { document.getElementById("secs").childNodes[ ( 53 - ( 6 * i ) ) ].className = "box box_on"; }
-		else{ document.getElementById("secs").childNodes[ ( 53 - ( 6 * i ) ) ].className = "box box_off"; }
-		}
-
-	//Update other seconds columns if ones digit is zero or refresh == 1.
-	if ( times[0][5] == 0 || refresh == 1) {
-		for(i=0; i < ( $('#mod_secs').val() - 1 ); i++){
-			for (j=0; j < ( fiftynine.toString( $('#mod_secs').val() ).length - 1); j++){
-				if ( i < times[0][ ( 4 - j ) ] ) { document.getElementById("secs").childNodes[ ( 52 - j - ( 6 * i ) ) ].className = "box box_on"; }
-				else{ document.getElementById("secs").childNodes[ ( 52 - j - ( 6 * i ) ) ].className = "box box_off"; }
-			}
-		}
+			times[i] = "0" + times[i];
+	    }
 	}
 
-	//Update minute columns if seconds are zeros or refresh == 1.
-	if ( times[0] == "000000" || refresh ==  1) {
-		for(i=0; i < ( $('#mod_mins').val() - 1 ); i++){
-			for (j=0; j < fiftynine.toString( $('#mod_mins').val() ).length ; j++){
-				if ( i < times[1][ ( 5 - j ) ] ) { document.getElementById("mins").childNodes[ ( 53 - j - ( 6 * i ) ) ].className = "box box_on"; }
-				else{ document.getElementById("mins").childNodes[ ( 53 - j - ( 6 * i ) ) ].className = "box box_off"; }
+	//Clock object 
+	function Clock(id, number, zeroTest, k, eq) {
+		this.id = id;
+		this.zeroTest = ( zeroTest || refresh == 1);
+		this.k = k;
+		this.eq = eq;
+		this.mod = '#mod_' + id;
+		this.i_condition = $(this.mod).val() - 1;
+		this.j_condition = number.toString( $(this.mod).val() ).length - 1;
+		
+		console.log(this.eq)
+		
+		this.childIndex = function(i,j){
+			return this.k - j - ( 6 * i );
+		}
+		
+		this.toggleClassName = function(i,j){
+			return "box box_"+((this.eq(i,j)) ? "on" : "off");
+		}
+		
+		this.toggleClass = function(i,j){
+			document.getElementById(this.id).childNodes[this.childIndex(i,j)].className=this.toggleClassName(i,j);
+		}
+		
+		this.updateOnes = function(){
+			for(i=0; i < this.i_condition; i++){
+				this.toggleClass(i,0);
 			}
 		}
+		
+		this.updateColumns = function() {
+			if (this.zeroTest){
+				for (i=0; i < this.i_condition; i++){
+					for (j=0; j < this.j_condition; j++){
+						this.toggleClass(i,j);
+					}
+				}
+			}	
+		}		
 	}
-
-	//Update hours columns if minutes are zeros or refresh == 1.
-	if ( times[1] == "000000" || refresh == 1) {
-		for(i=0; i < ( $('#mod_hours').val() - 1 ); i++){
-			for (j=0; j< twentyfour.toString( $('#mod_hours').val() ).length ; j++){
-				if ( i < times[2][ ( 5 - j ) ] ) { document.getElementById("hours").childNodes[ ( 53 - j - ( 6 * i ) ) ].className = "box box_on"; }
-				else{ document.getElementById("hours").childNodes[ ( 53 - j - ( 6 * i ) ) ].className = "box box_off"; }
-			}
-		}
-	}
-
-
+	
+	 
+	var ones = new Clock( 'secs', '', '', 53, function (i,j) {return i < times[0][5]} );
+	var secs = new Clock( 'secs', fiftynine, (times[0][5] == 0), 52, function (i,j) {return i < times[0][ ( 4-j ) ]} );
+	var mins = new Clock( 'mins', fiftynine, (times[0] == "000000"), 53, function (i,j) {return i < times[1][ ( 5-j ) ]} );
+	var hours = new Clock( 'hours', twentyfour, (times[1] == "000000"), 53, function (i,j) {return i < times[2][ ( 5-j ) ]} );
+	
+	ones.updateOnes();
+	secs.updateColumns();
+	mins.updateColumns();
+	hours.updateColumns();
 
 	//Update clock in one second.
 	clockID = setTimeout(function(){ modular_clock_update(0); }, 1000);
