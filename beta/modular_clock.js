@@ -83,7 +83,9 @@ function modular_clock_update( refresh ){
 		}
 		
 		this.toggleClass = function(i,j){
-			document.getElementById(this.id).childNodes[this.childIndex(i,j)].className=this.toggleClassName(i,j);
+			document.getElementById(this.id)
+					.childNodes[this.childIndex(i,j)]
+					.className=this.toggleClassName(i,j);
 		}
 		
 		this.updateOnes = function(){
