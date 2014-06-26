@@ -1,7 +1,7 @@
 var clockID = 0;
 var times = new Array(3);
 var fiftynine=59;
-var twentyfour=24;
+var twentythree=23;
 
 
 function modular_clock_init(){
@@ -84,7 +84,7 @@ function modular_clock_update( refresh ){
 	//Update hours columns if minutes are zeros or refresh == 1.
 	if ( times[1] == "000000" || refresh == 1) {
 		for(i=0; i < ( $('#mod_hours').val() - 1 ); i++){
-			for (j=0; j< twentyfour.toString( $('#mod_hours').val() ).length ; j++){
+			for (j=0; j< twentythree.toString( $('#mod_hours').val() ).length ; j++){
 				if ( i < times[2][ ( 5 - j ) ] ) { document.getElementById("hours").childNodes[ ( 53 - j - ( 6 * i ) ) ].className = "box box_on"; }
 				else{ document.getElementById("hours").childNodes[ ( 53 - j - ( 6 * i ) ) ].className = "box box_off"; }
 			}
