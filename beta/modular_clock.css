@@ -24,15 +24,15 @@ div.third{
 }
 
 #hours{
-		background: rgba(256, 0, 0, 0.25);
+	background: rgba(256, 0, 0, 0.25);
 }
 
 #mins{
-		background: rgba(0, 256, 0, 0.25);
+	background: rgba(0, 256, 0, 0.25);
 }
 
 #secs{
-		background: rgba(0, 0, 256, 0.25);
+	background: rgba(0, 0, 256, 0.25);
 }
 
 div.box{
@@ -54,9 +54,9 @@ div.box_mod{
 }
 
 div.box_on{
-		background: rgba(256, 256, 256, 0.25);
+	background: rgba(256, 256, 256, 0.25);
 }
 
 div.box_off{
-		background: rgba(0, 0, 0, 0.5);
+	background: rgba(0, 0, 0, 0.5);
 }

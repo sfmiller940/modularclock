@@ -3,6 +3,7 @@ var times = new Array(3);
 var fiftynine=59;
 var twentyfour=24;
 
+
 //We loop through these id_names a bunch
 function timeVarsLoop(func){
 	$.each(['secs', 'mins', 'hours'], function(index, value) { 	
@@ -11,7 +12,29 @@ function timeVarsLoop(func){
 	});
 }
 
+function keyArgs(){
+		var baseMin = 2;
+		var baseMax = 10;
+		var keyTimeUnits = {
+			units: ['secs', 'mins', 'hours'],
+			unitCount: [59, 59, 24],
+			adjustment: [1, 0, 0]
+			
+		};
+		var max_of_array = Math.max.apply(Math, keyTimeUnits.unitCount);
+		var divCount;
+		/*
+		for (i=0, i < max_of_array, i++){
+			(max_of_array).toString(
+		}
+		*/
+		
+		
+}
+
 function modular_clock_init(){
+	
+	keyArgs()
 	
 	var childDivs = function childDivsFn(id) {
 		$('#'+id).append('<div class="box box_' + id + '"></div>')
@@ -42,6 +65,8 @@ function modular_clock_init(){
 
 function modular_clock_update( refresh ){
 	
+	console.log('clockID: '+clockID);
+	
 	//Clear the clock.
 	if(clockID) {
 	  clearTimeout(clockID);
@@ -49,7 +74,9 @@ function modular_clock_update( refresh ){
 	}
 	
 	if (refresh == 1){
-		timeVarsLoop(function styleResetFunc(id){$('[class*="box box"]').attr('class', "box box_"+id)});
+		timeVarsLoop(function styleResetFunc(id){$('#' + id + ' [class*="box box"]')
+												.children()
+												.attr('class', "box box_" + id)});
 	}
 		
 	//Make and pad array of times.
@@ -58,35 +85,49 @@ function modular_clock_update( refresh ){
 	times[1] = tDate.getMinutes().toString( $('#mod_mins').val() );
 	times[2] = tDate.getHours().toString( $('#mod_hours').val() );
 	
+	/*
+	t = times;
+	console.log(t.reverse());
+	*/
 	for(i=0;i<3;i++){
 		for (j=times[i].length;j<6;j++){
 			times[i] = "0" + times[i];
 	    }
 	}
-
+	
+	console.log('[secs, mins, hours]: ' + times);
+	
 	//Clock object 
-	function Clock(id, number, zeroTest, k, toggleClassNameCondition) {
+	function Clock(t, id, number, zeroTest, toggleClassNameCondition) {
+		
+		/*
+		this.i_condition: row_lim
+		this.j_condition: column_lim
+		*/
+		
+		//console.log(refresh);
+		//console.log('zeroTest: '+zeroTest);
+		adj = (id =='mins') ? -1 : 0  // dirty adjuster for minutes class
+		
+		console.log('times: ' + t)
+		this.number = number //for debug purposes
+		
 		this.id = id;
 		this.zeroTest = ( zeroTest || refresh == 1);
-		this.k = k;
+		this.divCount = 53 + adj;
 		this.toggleClassNameCondition = toggleClassNameCondition;
 		this.mod = '#mod_' + id;
 		this.i_condition = $(this.mod).val() - 1;
-		this.j_condition = number.toString( $(this.mod).val() ).length - 1;
+		this.j_condition = number.toString( $(this.mod).val() ).length + adj;
 		
-		this.childIndex = function(i,j){
-			return this.k - j - ( 6 * i );
-		}
-		
-		this.toggleClassName = function(i,j){
-			return "box box_"+((this.toggleClassNameCondition(i,j)) ? "on" : "off");
-		}
-		
-		this.toggleClass = function(i,j){
-			document.getElementById(this.id)
-					.childNodes[this.childIndex(i,j)]
-					.className=this.toggleClassName(i,j);
-		}
+		console.log('\n this.id: '+this.id
+			+'\n this.zeroTest: '+this.zeroTest
+			+'\n this.divCount: '+this.divCount
+			+'\n this.toggleClassNameCondition: '+this.toggleClassNameCondition
+			+'\n this.mod: '+this.mod
+			+'\n this.i_condition: '+this.i_condition
+			+'\n this.j_condition: '+this.j_condition
+		);
 		
 		this.updateOnes = function(){
 			for(i=0; i < this.i_condition; i++){
@@ -102,13 +143,36 @@ function modular_clock_update( refresh ){
 					}
 				}
 			}	
-		}		
+		}
+		
+		this.toggleClass = function(i,j){
+			console.log(this.id+'; '+this.number
+				+ '\ni:' + i
+				+ '\nj: ' + j
+				+ '\nthis.childIndex(i,j): ' + this.childIndex(i,j)
+				+ '\nthis.toggleClassName(i,j): ' + this.toggleClassName(i,j)
+			);
+			this.childIndex(i,j)
+			document.getElementById(this.id)
+					.childNodes[this.childIndex(i,j)]
+					.className=this.toggleClassName(i,j);
+		}
+		
+		this.childIndex = function(i,j){
+			//console.log('childIndex reached');
+			return this.divCount - j - ( 6 * i );
+		}
+		
+		this.toggleClassName = function(i,j){
+			//console.log('this.toggleClassName: '+"box box_"+((this.toggleClassNameCondition(i,j)) ? "on" : "off"));
+			return "box box_"+((this.toggleClassNameCondition(i,j)) ? "on" : "off");
+		}
 	}
 	
-	var ones = new Clock( 'secs', '', '', 53, function (i,j) {return i < times[0][5]} );
-	var secs = new Clock( 'secs', fiftynine, (times[0][5] == 0), 52, function (i,j) {return i < times[0][ ( 4-j ) ]} );
-	var mins = new Clock( 'mins', fiftynine, (times[0] == "000000"), 53, function (i,j) {return i < times[1][ ( 5-j ) ]} );
-	var hours = new Clock( 'hours', twentyfour, (times[1] == "000000"), 53, function (i,j) {return i < times[2][ ( 5-j ) ]} );
+	var ones = new Clock( times[0], 'secs', '', '', function (i,j) {return i < times[0][5]} );
+	var secs = new Clock( times[0], 'secs', fiftynine, (times[0][5] == 0), function (i,j) {return i < times[0][ ( 4-j ) ]} );
+	var mins = new Clock( times[1],'mins', fiftynine, (times[0] == "000000"), function (i,j) {return i < times[1][ ( 5-j ) ]} );
+	var hours = new Clock( times[2],'hours', twentyfour, (times[1] == "000000"), function (i,j) {return i < times[2][ ( 5-j ) ]} );
 	
 	ones.updateOnes();
 	secs.updateColumns();
@@ -117,4 +181,5 @@ function modular_clock_update( refresh ){
 
 	//Update clock in one second.
 	clockID = setTimeout(function(){ modular_clock_update(0); }, 1000);
+
 }
