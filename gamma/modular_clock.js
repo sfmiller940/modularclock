@@ -70,11 +70,12 @@ function modular_clock_init(){
 	Not a big fan of this section, but I guess we gotta build the html somewhere...
 	*/
 	// Tried to add bootstrap select box, but it messes up everything
-	/*
+	
 	$(document).ready(function(e) {
-	  $('.selectpicker').selectpicker();
+	  $('.selectpicker').selectpicker()
+						.on('change', function(){modular_clock_update(1);});
 	});
-	*/
+	
 	
 	var k = new keyArgs();
 	
@@ -90,10 +91,12 @@ function modular_clock_init(){
 	
 	var createSelects = function selectFn(id) {
 		var options
+		j=0
 		for (i=k.baseMax; i>=k.baseMin; i--) {
-			options += '<option value="' + i + '">' + i + '</option>';
+			options += '<option value="' + i + '" ' + ((j=0) ? ' selected="select"' : '' +'>') + i + '</option>';
+			j++
 		}
-		var dv = '<div class="box_mod"><select id="mod_' + id + '" class="selectpicker">' + options + '</div>';
+		var dv = '<div class="box_mod"><select id="mod_' + id + '" class="selectpicker" data-style="btn-inverse">' + options + '</div>';
 		$('#'+id).append(dv);
 	}
 	
@@ -107,9 +110,9 @@ function modular_clock_init(){
 	// Add select inputs
 	k.timeVarsLoop(createSelects);
 	
-	// If changed, then reset
-	$("[id^=mod]").change(function(){modular_clock_update(1);});
-	
+	// If changed, then reset (before bootstrap .selectpicker() was implemented
+	//$("[id^=mod]").change(function(){modular_clock_update(1);});
+
 	// Start the clock
 	modular_clock_update(1);
 }
