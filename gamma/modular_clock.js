@@ -69,6 +69,12 @@ function modular_clock_init(){
 	/*
 	Not a big fan of this section, but I guess we gotta build the html somewhere...
 	*/
+	// Tried to add bootstrap select box, but it messes up everything
+	/*
+	$(document).ready(function(e) {
+	  $('.selectpicker').selectpicker();
+	});
+	*/
 	
 	var k = new keyArgs();
 	
@@ -87,7 +93,7 @@ function modular_clock_init(){
 		for (i=k.baseMax; i>=k.baseMin; i--) {
 			options += '<option value="' + i + '">' + i + '</option>';
 		}
-		var dv = '<div class="box_mod"><select id="mod_' + id + '">' + options + '</div>';
+		var dv = '<div class="box_mod"><select id="mod_' + id + '" class="selectpicker">' + options + '</div>';
 		$('#'+id).append(dv);
 	}
 	

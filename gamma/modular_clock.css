@@ -45,6 +45,7 @@ div.box{
 
 }
 
+
 div.box_mod{
 	width:100px;
 	text-align:center;
@@ -52,6 +53,7 @@ div.box_mod{
 	margin-right:auto;
 	margin-top: 25px;
 }
+
 
 div.box_on{
 	background: rgba(256, 256, 256, 0.25);
