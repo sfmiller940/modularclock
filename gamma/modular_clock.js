@@ -72,7 +72,7 @@ function modular_clock_init(){
 	
 	var k = new keyArgs();
 	
-	var childDivs = function childDivsFn(id) {
+	var createChildDivs = function childDivsFn(id) {
 		var dv='';
 		for (r=k.rows; r>0; r--){
 			for (c=0; c<k.cols; c++){
@@ -82,12 +82,12 @@ function modular_clock_init(){
 		$('#'+id).append(dv)
 	}
 	
-	var selects = function selectFn(id) {
+	var createSelects = function selectFn(id) {
 		var options
 		for (i=k.baseMax; i>=k.baseMin; i--) {
 			options += '<option value="' + i + '">' + i + '</option>';
 		}
-		dv = '<div class="box_mod"><select id="mod_' + id + '">' + options + '</div>';
+		var dv = '<div class="box_mod"><select id="mod_' + id + '">' + options + '</div>';
 		$('#'+id).append(dv);
 	}
 	
@@ -96,13 +96,13 @@ function modular_clock_init(){
 	$("div div").addClass("third");
 	
 	// Create child divs
-	k.timeVarsLoop(childDivs);
+	k.timeVarsLoop(createChildDivs);
 		
 	// Add select inputs
-	k.timeVarsLoop(selects);
+	k.timeVarsLoop(createSelects);
 	
 	// If changed, then reset
-	$('#mod_hours, #mod_mins, #mod_secs').change(function(){modular_clock_update(1);});
+	$("[id^=mod]").change(function(){modular_clock_update(1);});
 	
 	// Start the clock
 	modular_clock_update(1);
@@ -145,7 +145,11 @@ function modular_clock_update( refresh ){
 			return $('#' + this.id + ' div.row' + row + '.col' + column);  
 		}
 		
-		// Darken the appropriate divs
+		/*  
+		I use "row" and "column" words below for clarity
+		*/
+		
+		// Darken all divs relevant to clock's base number
 		for (row=1; row < key.base; row++){
 			for (column=1; column <= key.width; column++){
 				c = key.cols - column										//columns count left-to-right, but the clock reads right-to-left.. reverse it.
@@ -153,10 +157,10 @@ function modular_clock_update( refresh ){
 			}
 		}
 		
-		// Lighten divs
+		// Lighten divs according to time
 		// We should add back the "skip" functionality this for certain classes/parameters 
 		for (column=0; column < key.time_array.length; column++){ 				
-			for (row=0; row <= parseInt(key.time_array[column]); row++){
+			for (row=1; row <= parseInt(key.time_array[column]); row++){
 				$(this.selectClasses(row,column)).removeClass("box_off").addClass("box_on");
 			}
 		}
