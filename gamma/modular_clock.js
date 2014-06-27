@@ -1,77 +1,77 @@
 var clockID = 0;
-var times = new Array(3);
-var fiftynine=59;
-var twentyfour=24;
 
-
-//We loop through these id_names a bunch
-function timeVarsLoop(func){
-	$.each(['secs', 'mins', 'hours'], function(index, value) { 	
-		//console.log(func);
-		func(value);
-	});
+function keyArgs(){
+	
+	this.baseMin = 2;
+	this.baseMax = 10;
+	this.keyTimeUnits = {
+		units: ['secs', 'mins', 'hours' /* ,'milliseconds', 'years', 'light years'*/],
+		unitLimit: [59, 59, 23],
+		getTime: [function(x){return x.getSeconds();}, function(x){return x.getMinutes();}, function(x){return x.getHours();}]
+		// "getTime" property should probably instantiate a time class
+		// ... anything else we want to add that is unit-specific ... //
+	};
+	
+	//We loop through these id_names a bunch
+	this.timeVarsLoop = function(func){
+		$.each(this.keyTimeUnits.units, function(index, value) { 	
+			func(value);
+		});
+	}
+	
+	// These should be hooked in with the css
+	// So, the display can adjust depending on time units 
+	this.rows = 9;
+	this.cols = 6;
+	this.divCount = this.rows * this.cols; 									// Unused
+	
+	this.getKeys = function(timeUnit){	
+		
+		k = this.keyTimeUnits
+		
+		// package up keys
+		this.idx = k.units.indexOf(timeUnit);
+		this.unitLimit = k.unitLimit[this.idx];
+		this.base = $('#mod_' + timeUnit).val();							// Max rows, per base number
+		this.width = this.unitLimit.toString( this.base ).length; 			// Max width, per time unit
+		
+		// now package the times
+		var tDate = new Date();
+		fnUnitsConvert = this.keyTimeUnits.getTime[this.idx];
+		time = fnUnitsConvert(tDate).toString( this.base );
+		this.time = this.padTime(time, this.cols);
+		this.time_array = this.time.split('');
+		}
+		
+	this.padTime = function(t){
+		while (t.length < this.cols){
+			t = "0" + t;
+		}
+		return t
+	}
+	
 }
 
-
-function modular_clock_init(){
-
-	function keyArgs(){
-		/*
-		var baseMin = 2;
-		var baseMax = 10;
-		var keyTimeUnits = {
-			units: ['secs', 'mins', 'hours'],
-			unitCount: [59, 59, 24],
-			adjustment: [1, 0, 0]
-		};
-		var max_of_array = Math.max.apply(Math, keyTimeUnits.unitCount);
-		var divCount;
-		*/
-		this.rows = 9;
-		this.cols = 6;
-		
-		/*
-		for (i=0, i < max_of_array, i++){
-			(max_of_array).toString(
-		}
-		*/
-			
-			
-	}
-
-	var k = new keyArgs();
-	
-	console.log(k.rows);
-	console.log(k.cols);
+function modular_clock_init(){ 
 	/*
-	for (r=k.rows; r>=0; r--){
-		for (c=0; c<=k.cols; c++){
-			console.log('c= '+c+'\tr= '+r);
-		}
-	}
+		Not a big fan of this section, but I guess we gotta build the html somewhere...
 	*/
 	
+	var k = new keyArgs();
 	
-	var childDivs = function childDivsFn(id) {
-		$('#'+id).append('<div class="box box_' + id + '"></div>')
-	}
-	
-	/*
 	var childDivs = function childDivsFn(id) {
 		var dv='';
 		for (r=k.rows; r>0; r--){
-			for (c=0; c<=k.cols; c++){
-				console.log('c= '+c+'\tr= '+r);
+			for (c=0; c<k.cols; c++){
 				dv += '<div class="box box_' + id + ' row' + r + ' col'+c + '"></div>'
-				//$('#'+id).append('<div class="box box_' + id + ' row' + r + ' col'+c + '"></div>')
 			}
 		}
 		$('#'+id).append(dv)
 	}
-	*/
+	
 	var selects = function selectFn(id) {
 		var options
-		for (i=10; i>1; i--) {
+		for (i=k.baseMax; i>=k.baseMin; i--) {
 			options += '<option value="' + i + '">' + i + '</option>';
 		}
 		dv = '<div class="box_mod"><select id="mod_' + id + '">' + options + '</div>';
@@ -83,11 +83,13 @@ function modular_clock_init(){
 	$("div div").addClass("third");
 	
 	//Create child divs
-	for (i=0; i < 54; i++){timeVarsLoop(childDivs);}
-	//timeVarsLoop(childDivs);
+	k.timeVarsLoop(childDivs);
 		
 	//Add select inputs.
-	timeVarsLoop(selects);
+	k.timeVarsLoop(selects);
+	
+	//If changed, then reset.
+	$('#mod_hours, #mod_mins, #mod_secs').change(function(){modular_clock_update(1);});
 	
 	//Start the clock
 	modular_clock_update(1);
@@ -95,9 +97,7 @@ function modular_clock_init(){
 
 
 function modular_clock_update( refresh ){
-	
-	console.log('clockID: '+clockID);
-	
+
 	//Clear the clock.
 	if(clockID) {
 	  clearTimeout(clockID);
@@ -105,111 +105,55 @@ function modular_clock_update( refresh ){
 	}
 	
 	if (refresh == 1){
-		timeVarsLoop(function styleResetFunc(id){$('#' + id + ' [class*="box box"]')
-												.children()
-												.attr('class', "box box_" + id)});
-	}
-		
-	//Make and pad array of times.
-	var tDate = new Date();
-	times[0] = tDate.getSeconds().toString( $('#mod_secs').val() );
-	times[1] = tDate.getMinutes().toString( $('#mod_mins').val() );
-	times[2] = tDate.getHours().toString( $('#mod_hours').val() );
-	
-	/*
-	t = times;
-	console.log(t.reverse());
-	*/
-	for(i=0;i<3;i++){
-		for (j=times[i].length;j<6;j++){
-			times[i] = "0" + times[i];
-	    }
+		$('div.box').removeClass('box_on').removeClass('box_off');
 	}
 	
-	console.log('[secs, mins, hours]: ' + times);
-	
-	//Clock object 
-	function Clock(t, id, number, zeroTest, toggleClassNameCondition) {
-		
+	//**NEW** Clock object 
+	function Clock(id){
 		/*
-		this.i_condition: row_lim
-		this.j_condition: column_lim
+		div classes are as follows on the UI:
+		=============================
+		[row(x) col0]	[row(x) col1]...[row(x) col(y)]
+		.
+		.
+		.
+		[row2 col0] 	[row2 col1]	...	[row2 col(y)]
+		[row1 col0]		[row1 col1]	...	[row1 col(y)]
+		
+		They are now meant to be modular, so we can expand into other time_units
 		*/
+		this.id = id;	
 		
-		//console.log(refresh);
-		//console.log('zeroTest: '+zeroTest);
-		adj = (id =='mins') ? -1 : 0  // dirty adjuster for minutes class
+		var key = new keyArgs();
+		key.getKeys(this.id);
 		
-		console.log('times: ' + t)
-		this.number = number //for debug purposes
+		// builds proper jQuery selector for below loops
+		this.selectClasses = function(row, column){
+			return $('#' + this.id + ' div.row' + row + '.col' + column);  
+		}
 		
-		this.id = id;
-		this.zeroTest = ( zeroTest || refresh == 1);
-		this.divCount = 53 + adj;
-		this.toggleClassNameCondition = toggleClassNameCondition;
-		this.mod = '#mod_' + id;
-		this.i_condition = $(this.mod).val() - 1;
-		this.j_condition = number.toString( $(this.mod).val() ).length + adj;
-		
-		console.log('\n this.id: '+this.id
-			+'\n this.zeroTest: '+this.zeroTest
-			+'\n this.divCount: '+this.divCount
-			+'\n this.toggleClassNameCondition: '+this.toggleClassNameCondition
-			+'\n this.mod: '+this.mod
-			+'\n this.i_condition: '+this.i_condition
-			+'\n this.j_condition: '+this.j_condition
-		);
-		
-		this.updateOnes = function(){
-			for(i=0; i < this.i_condition; i++){
-				this.toggleClass(i,0);
+		//Darken the appropriate divs
+		for (row=1; row < key.base; row++){
+			for (column=1; column <= key.width; column++){
+				col = key.cols - column										//columns count left-to-right, but the clock reads right-to-left.. reverse it.
+				$(this.selectClasses(row,column)).addClass("box_off");
 			}
 		}
 		
-		this.updateColumns = function(){
-			if (this.zeroTest){
-				for (i=0; i < this.i_condition; i++){
-					for (j=0; j < this.j_condition; j++){
-						this.toggleClass(i,j);
-					}
-				}
-			}	
+		//Lighten divs
+		//We should add back the "skip" functionality this for certain classes/parameters 
+		for (column=0; column < key.time_array.length; column++){ 				
+			for (row=0; row <= parseInt(key.time_array[column]); row++){
+				$(this.selectClasses(row,column)).removeClass("box_off").addClass("box_on");
+			}
 		}
 		
-		this.toggleClass = function(i,j){
-			console.log(this.id+'; '+this.number
-				+ '\ni:' + i
-				+ '\nj: ' + j
-				+ '\nthis.childIndex(i,j): ' + this.childIndex(i,j)
-				+ '\nthis.toggleClassName(i,j): ' + this.toggleClassName(i,j)
-			);
-			
-			document.getElementById(this.id)
-					.childNodes[this.childIndex(i,j)]
-					.className=this.toggleClassName(i,j);
-		}
-		
-		this.childIndex = function(i,j){
-			//console.log('childIndex reached');
-			return this.divCount - j - ( 6 * i );
-		}
-		
-		this.toggleClassName = function(i,j){
-			//console.log('this.toggleClassName: '+"box box_"+((this.toggleClassNameCondition(i,j)) ? "on" : "off"));
-			return "box box_"+((this.toggleClassNameCondition(i,j)) ? "on" : "off");
-		}
 	}
 	
-	var ones = new Clock( times[0], 'secs', '', '', function (i,j) {return i < times[0][5]} );
-	var secs = new Clock( times[0], 'secs', fiftynine, (times[0][5] == 0), function (i,j) {return i < times[0][ ( 4-j ) ]} );
-	var mins = new Clock( times[1],'mins', fiftynine, (times[0] == "000000"), function (i,j) {return i < times[1][ ( 5-j ) ]} );
-	var hours = new Clock( times[2],'hours', twentyfour, (times[1] == "000000"), function (i,j) {return i < times[2][ ( 5-j ) ]} );
+	var secs = new Clock('secs');
+	var mins = new Clock('mins');
+	var hours = new Clock('hours');
 	
-	ones.updateOnes();
-	secs.updateColumns();
-	mins.updateColumns();
-	hours.updateColumns();
-
 	//Update clock in one second.
 	clockID = setTimeout(function(){ modular_clock_update(0); }, 1000);
 
