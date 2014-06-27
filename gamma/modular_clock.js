@@ -135,8 +135,8 @@ function modular_clock_update( refresh ){
 		//Darken the appropriate divs
 		for (row=1; row < key.base; row++){
 			for (column=1; column <= key.width; column++){
-				col = key.cols - column										//columns count left-to-right, but the clock reads right-to-left.. reverse it.
-				$(this.selectClasses(row,column)).addClass("box_off");
+				c = key.cols - column										//columns count left-to-right, but the clock reads right-to-left.. reverse it.
+				$(this.selectClasses(row,c)).addClass("box_off");
 			}
 		}
 		
