@@ -45,6 +45,7 @@ div.box{
 
 }
 
+
 div.box_mod{
 	width:100px;
 	text-align:center;
@@ -53,10 +54,15 @@ div.box_mod{
 	margin-top: 25px;
 }
 
+
 div.box_on{
 	background: rgba(256, 256, 256, 0.25);
 }
 
 div.box_off{
 	background: rgba(0, 0, 0, 0.5);
+}
+
+.bootstrap-select {
+	width: 60px !important;
 }
