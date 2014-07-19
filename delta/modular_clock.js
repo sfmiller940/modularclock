@@ -4,11 +4,10 @@ function ModularClock(baseMax){
 	// Key Arguments
 	this.keyArgs = function(){
 		
-		// Update baseMax to 12 at some point.
 		this.baseMin = 2;
 		this.baseMax = baseMax;
 		this.keyTimeUnits = {
-			units: ['secs', 'mins', 'hours' /* ,'milliseconds', 'years', 'light years'*/],
+			units: ['secs', 'mins', 'hours' /* ,'milliseconds', 'days', 'months',years'*/],
 			unitLimit: [59, 59, 23],
 			getTime: [function(x){return x.getSeconds();}, function(x){return x.getMinutes();}, function(x){return x.getHours();}]
 			// "getTime" property should probably instantiate a time class
@@ -68,6 +67,7 @@ function ModularClock(baseMax){
 		
 	}
 
+
 	// Update Clock.
 	function update( refresh ){
 
@@ -77,12 +77,13 @@ function ModularClock(baseMax){
 		  clockID  = 0;
 		}
 		
+		// Reset classes on change of mod.
 		if (refresh == 1){
 			$('div.box').removeClass('box_on').removeClass('box_off');
 		}
 		
-		// **NEW** Clock object 
-		function Clock(id){
+		// Update divs
+		function divUpdate(id){
 			/*
 			div classes are as follows on the UI:
 			=============================
@@ -96,18 +97,13 @@ function ModularClock(baseMax){
 			They are now meant to be modular, so we can expand into other time_units
 			*/
 			this.id = id;	
-			
 			keyArgs.getKeys(this.id);
 			
 			// Builds proper jQuery selector for below loops
 			this.selectClasses = function(row, column){
 				return $('#' + this.id + ' div.row' + row + '.col' + column);  
 			}
-			
-			/*  
-			I use "row" and "column" words below for clarity
-			*/
-			
+						
 			// Darken all divs relevant to clock's base number
 			for (row=1; row < keyArgs.base; row++){
 				for (column=1; column <= keyArgs.width; column++){
@@ -126,9 +122,9 @@ function ModularClock(baseMax){
 			
 		}
 		
-		var secs = new Clock('secs');
-		var mins = new Clock('mins');
-		var hours = new Clock('hours');
+		var secs = new divUpdate('secs');
+		var mins = new divUpdate('mins');
+		var hours = new divUpdate('hours');
 		
 		// Update clock in one second
 		clockID = setTimeout(function(){ update(0); }, 1000);
