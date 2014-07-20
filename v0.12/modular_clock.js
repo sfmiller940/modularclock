@@ -8,7 +8,7 @@ function ModularClock(baseMax){
 		
 		// Basic variables.
 		this.baseMin = 2;
-		this.baseMax = baseMax;
+		this.baseMax = baseMax; // Doesn't work except for 10 yet.
 		this.rows = baseMax - 1;
 
 
@@ -60,7 +60,7 @@ function ModularClock(baseMax){
 	var clockID = 0;
 	var keyArgs = new this.keyArgs();
 
-	// Add divs for hours, mins, secs
+	// Create unit container divs
 	$('#modular_clock').append('<div id="hours"></div><div id="mins"></div><div id="secs"></div>')
 	$("div div").addClass("third");
 
