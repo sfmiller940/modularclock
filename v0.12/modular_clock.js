@@ -6,8 +6,13 @@ function ModularClock(baseMax){
 	//
 	this.keyArgs = function(){
 		
+		// Basic variables.
 		this.baseMin = 2;
 		this.baseMax = baseMax;
+		this.rows = baseMax - 1;
+
+
+		// Class for time units
 		this.keyTimeUnits = {
 			units: ['secs', 'mins', 'hours' /* ,'milliseconds', 'days', 'months',years'*/],
 			unitLimit: [59, 59, 23],
@@ -15,7 +20,6 @@ function ModularClock(baseMax){
 			// "getTime" property should probably instantiate a time class
 			// ... anything else we want to add that is unit-specific ... //
 		};
-		
 		// Loop through units.
 		this.timeUnitsLoop = function(func){
 			$.each(this.keyTimeUnits.units, function(index, value) { 	
@@ -23,25 +27,14 @@ function ModularClock(baseMax){
 			});
 		}
 		
-		// These should be hooked in with the css
-		// So, the display can adjust depending on time units 
-		var base = this.baseMin;
-		var max = 0;
+		// Calculate # of columns
 		this.keyTimeUnits.maxCols = new Array();
 		for (i=0; i<this.keyTimeUnits.unitLimit.length; i++) {
-			for (base=this.baseMin; base <= this.baseMax; base++) {
-				j = this.keyTimeUnits.unitLimit[i].toString(base).length;
-				if (max < j){
-					max = j;
-				}
-				this.keyTimeUnits.maxCols[i] = max;
-			}
+			this.keyTimeUnits.maxCols[i] = this.keyTimeUnits.unitLimit[i].toString(this.baseMin).length;
 		}
-		
-		this.cols = Math.max.apply(Math, this.keyTimeUnits.maxCols)				// Governed by largest clock number (59 base 2)
-		this.rows = baseMax - 1;  														// Governed by our number system														// Governed by Largest base
-		this.divCount = this.rows * this.cols; 									// Unused
+		this.cols = Math.max.apply(Math, this.keyTimeUnits.maxCols); // We should use maxCols for each unit, not same cols for every unit.
 
+		// Various keys.
 		this.getKeys = function(timeUnit){	
 			
 			k = this.keyTimeUnits
@@ -58,8 +51,9 @@ function ModularClock(baseMax){
 			time = fnUnitsConvert(tDate).toString( this.base );
 			this.time = this.padTime(time, this.cols);
 			this.time_array = this.time.split('');
-			}
-			
+		}
+		
+		// Pad a time string to appropriate length.	
 		this.padTime = function(t){
 			while (t.length < this.cols){
 				t = "0" + t;
@@ -133,22 +127,16 @@ function ModularClock(baseMax){
 		
 		// Update divs
 		var divUpdate = function divUpdateFn(id){
-			/*
-			div classes are as follows on the UI:
-			=============================
-			[row(x) col0]	[row(x) col1]...[row(x) col(y)]
-			.
-			.
-			.
-			[row2 col0] 	[row2 col1]	...	[row2 col(y)]
-			[row1 col0]		[row1 col1]	...	[row1 col(y)]
-			
-			They are now meant to be modular, so we can expand into other time_units
-			*/
+			/* Div classes are as follows on the UI:
+				[row(x) col0] ...[row(x) col(y)]
+				...
+				[row1 col0]	...	[row1 col(y)]   */
+
+			// Get keys values.
 			this.id = id;	
 			keyArgs.getKeys(this.id);
 			
-			// Builds proper jQuery selector for below loops
+			// jQuery selector for below loops
 			this.selectClasses = function(row, column){
 				return $('#' + this.id + ' div.row' + row + '.col' + column);  
 			}
@@ -160,9 +148,7 @@ function ModularClock(baseMax){
 					$(this.selectClasses(row,c)).addClass("box_off");
 				}
 			}
-			
 			// Lighten divs according to time
-			// We should add back the "skip" functionality this for certain classes/parameters 
 			for (column=0; column < keyArgs.time_array.length; column++){ 				
 				for (row=1; row <= parseInt(keyArgs.time_array[column]); row++){
 					$(this.selectClasses(row,column)).removeClass("box_off").addClass("box_on");
