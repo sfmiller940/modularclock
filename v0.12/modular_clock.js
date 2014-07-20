@@ -77,7 +77,7 @@ function ModularClock(baseMax){
 	}
 	keyArgs.timeUnitsLoop(createChildDivs);
 
-	// Add select inputs
+	// Append select inputs
 	var createSelects = function selectFn(id) {
 		var options;
 		j=0;
