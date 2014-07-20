@@ -11,7 +11,6 @@ function ModularClock(baseMax){
 		this.baseMax = baseMax; // Doesn't work except for 10 yet.
 		this.rows = baseMax - 1;
 
-
 		// Class for time units
 		this.timeUnits = {
 			units: ['secs', 'mins', 'hours' /* ,'milliseconds', 'days', 'months',years'*/],
@@ -37,7 +36,7 @@ function ModularClock(baseMax){
 
 		// Keys dependent on time and active base.
 		this.getKeys = function(timeUnit){	
-						
+					
 			// Package keys.
 			this.idx = this.timeUnits.units.indexOf(timeUnit);
 			this.base = $('#mod_' + timeUnit).val();							// Max rows, per base number
