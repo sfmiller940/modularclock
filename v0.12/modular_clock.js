@@ -45,8 +45,7 @@ function ModularClock(baseMax){
 			
 			// Package time.
 			var tDate = new Date();
-			fnUnitsConvert = this.timeUnits.getTime[this.idx];
-			time = fnUnitsConvert(tDate).toString( this.base );
+			time = this.timeUnits.getTime[this.idx](tDate).toString( this.base );
 			while (time.length < this.timeUnits.maxCols[this.idx]) { time = "0" + time; }
 			this.time_array = time.split('');
 		}
