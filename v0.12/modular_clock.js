@@ -37,29 +37,20 @@ function ModularClock(baseMax){
 
 		// Various keys.
 		this.getKeys = function(timeUnit){	
-			
-			k = this.timeUnits;
-			
-			// package up keys
-			this.idx = k.units.indexOf(timeUnit);
-			this.unitLimit = k.unitLimit[this.idx];
+						
+			// Package keys.
+			this.idx = this.timeUnits.units.indexOf(timeUnit);
+			this.unitLimit = this.timeUnits.unitLimit[this.idx];
 			this.base = $('#mod_' + timeUnit).val();							// Max rows, per base number
 			this.width = this.unitLimit.toString( this.base ).length; 			// Max width, per time unit
 			
-			// now package the times
+			// Package time.
 			var tDate = new Date();
 			fnUnitsConvert = this.timeUnits.getTime[this.idx];
 			time = fnUnitsConvert(tDate).toString( this.base );
-			this.time = this.padTime(time, this.timeUnits.maxCols[this.idx]);
+			while (time.length < this.timeUnits.maxCols[this.idx]) { time = "0" + time; }
+			this.time = time;
 			this.time_array = this.time.split('');
-		}
-		
-		// Pad a time string to appropriate length.	
-		this.padTime = function(t){
-			while (t.length < this.timeUnits.maxCols[this.idx]){
-				t = "0" + t;
-			}
-			return t
 		}
 		
 	}
