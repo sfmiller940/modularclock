@@ -2,7 +2,7 @@ function ModularClock(baseMax){
 
 
 	//
-	// Key Arguments
+	// Key Arguments - Should be singleton?
 	//
 	this.keyArgs = function(){
 		
@@ -13,31 +13,32 @@ function ModularClock(baseMax){
 
 
 		// Class for time units
-		this.keyTimeUnits = {
+		this.timeUnits = {
 			units: ['secs', 'mins', 'hours' /* ,'milliseconds', 'days', 'months',years'*/],
 			unitLimit: [59, 59, 23],
 			getTime: [function(x){return x.getSeconds();}, function(x){return x.getMinutes();}, function(x){return x.getHours();}]
 			// "getTime" property should probably instantiate a time class
 			// ... anything else we want to add that is unit-specific ... //
 		};
-		// Loop through units.
+
+		// For looping through units.
 		this.timeUnitsLoop = function(func){
-			$.each(this.keyTimeUnits.units, function(index, value) { 	
+			$.each(this.timeUnits.units, function(index, value) { 	
 				func(value);
 			});
 		}
 		
 		// Calculate # of columns
-		this.keyTimeUnits.maxCols = new Array();
-		for (i=0; i<this.keyTimeUnits.unitLimit.length; i++) {
-			this.keyTimeUnits.maxCols[i] = this.keyTimeUnits.unitLimit[i].toString(this.baseMin).length;
+		this.timeUnits.maxCols = new Array();
+		for (i=0; i<this.timeUnits.unitLimit.length; i++) {
+			this.timeUnits.maxCols[i] = this.timeUnits.unitLimit[i].toString(this.baseMin).length;
 		}
-		this.cols = Math.max.apply(Math, this.keyTimeUnits.maxCols); // We should use maxCols for each unit, not same cols for every unit.
+		this.cols = Math.max.apply(Math, this.timeUnits.maxCols); // We should use maxCols for each unit, not same cols for every unit.
 
 		// Various keys.
 		this.getKeys = function(timeUnit){	
 			
-			k = this.keyTimeUnits
+			k = this.timeUnits;
 			
 			// package up keys
 			this.idx = k.units.indexOf(timeUnit);
@@ -47,7 +48,7 @@ function ModularClock(baseMax){
 			
 			// now package the times
 			var tDate = new Date();
-			fnUnitsConvert = this.keyTimeUnits.getTime[this.idx];
+			fnUnitsConvert = this.timeUnits.getTime[this.idx];
 			time = fnUnitsConvert(tDate).toString( this.base );
 			this.time = this.padTime(time, this.cols);
 			this.time_array = this.time.split('');
