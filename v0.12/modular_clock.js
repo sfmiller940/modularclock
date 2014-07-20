@@ -1,7 +1,9 @@
 function ModularClock(baseMax){
 
 
+	//
 	// Key Arguments
+	//
 	this.keyArgs = function(){
 		
 		this.baseMin = 2;
@@ -14,8 +16,8 @@ function ModularClock(baseMax){
 			// ... anything else we want to add that is unit-specific ... //
 		};
 		
-		// We loop through these id_names a bunch
-		this.timeVarsLoop = function(func){
+		// Loop through units.
+		this.timeUnitsLoop = function(func){
 			$.each(this.keyTimeUnits.units, function(index, value) { 	
 				func(value);
 			});
@@ -37,7 +39,7 @@ function ModularClock(baseMax){
 		}
 		
 		this.cols = Math.max.apply(Math, this.keyTimeUnits.maxCols)				// Governed by largest clock number (59 base 2)
-		this.rows = 9;  														// Governed by our number system														// Governed by Largest base
+		this.rows = baseMax - 1;  														// Governed by our number system														// Governed by Largest base
 		this.divCount = this.rows * this.cols; 									// Unused
 
 		this.getKeys = function(timeUnit){	
@@ -68,7 +70,54 @@ function ModularClock(baseMax){
 	}
 
 
+	//
+	// Initiate Clock
+	//
+	var clockID = 0;
+	var keyArgs = new this.keyArgs();
+
+	// Add divs for hours, mins, secs
+	$('#modular_clock').append('<div id="hours"></div><div id="mins"></div><div id="secs"></div>')
+	$("div div").addClass("third");
+
+	// Create child divs
+	var createChildDivs = function childDivsFn(id) {
+		var dv='';
+		for (r=keyArgs.rows; r>0; r--){
+			for (c=0; c<keyArgs.cols; c++){
+				dv += '<div class="box box_' + id + ' row' + r + ' col'+c + '"></div>'
+			}
+		}
+		$('#'+id).append(dv)
+	}
+	keyArgs.timeUnitsLoop(createChildDivs);
+
+	// Add select inputs
+	var createSelects = function selectFn(id) {
+		var options
+		j=0
+		for (i=keyArgs.baseMax; i>=keyArgs.baseMin; i--) {
+			options += '<option value="' + i + '" ' + ((j=0) ? ' selected="select"' : '' +'>') + i + '</option>';
+			j++
+		}
+		var dv = '<div class="box_mod"><select id="mod_' + id + '" class="selectpicker" data-style="btn-inverse">' + options + '</div>';
+		$('#'+id).append(dv);
+	}
+	keyArgs.timeUnitsLoop(createSelects);
+	
+	// Update clock on change of mod
+	$(document).ready(function(e) {
+	  $('.selectpicker').selectpicker()
+						.on('change', function(){update(1);});
+	});
+
+	// Start the clock
+	update(1);
+
+
+	//
 	// Update Clock.
+	//
 	function update( refresh ){
 
 		// Clear the clock
@@ -83,7 +132,7 @@ function ModularClock(baseMax){
 		}
 		
 		// Update divs
-		function divUpdate(id){
+		var divUpdate = function divUpdateFn(id){
 			/*
 			div classes are as follows on the UI:
 			=============================
@@ -121,57 +170,12 @@ function ModularClock(baseMax){
 			}
 			
 		}
-		
-		var secs = new divUpdate('secs');
-		var mins = new divUpdate('mins');
-		var hours = new divUpdate('hours');
+		keyArgs.timeUnitsLoop(divUpdate);
 		
 		// Update clock in one second
 		clockID = setTimeout(function(){ update(0); }, 1000);
 
 	}
 
-
-	// Initiate Clock
-	var clockID = 0;
-	var keyArgs = new this.keyArgs();
-
-	// Add divs for hours, mins, secs
-	$('#modular_clock').append('<div id="hours"></div><div id="mins"></div><div id="secs"></div>')
-	$("div div").addClass("third");
-
-	// Create child divs
-	var createChildDivs = function childDivsFn(id) {
-		var dv='';
-		for (r=keyArgs.rows; r>0; r--){
-			for (c=0; c<keyArgs.cols; c++){
-				dv += '<div class="box box_' + id + ' row' + r + ' col'+c + '"></div>'
-			}
-		}
-		$('#'+id).append(dv)
-	}
-	keyArgs.timeVarsLoop(createChildDivs);
-
-	// Add select inputs
-	var createSelects = function selectFn(id) {
-		var options
-		j=0
-		for (i=keyArgs.baseMax; i>=keyArgs.baseMin; i--) {
-			options += '<option value="' + i + '" ' + ((j=0) ? ' selected="select"' : '' +'>') + i + '</option>';
-			j++
-		}
-		var dv = '<div class="box_mod"><select id="mod_' + id + '" class="selectpicker" data-style="btn-inverse">' + options + '</div>';
-		$('#'+id).append(dv);
-	}
-	keyArgs.timeVarsLoop(createSelects);
-	
-	// Update clock on change of mod
-	$(document).ready(function(e) {
-	  $('.selectpicker').selectpicker()
-						.on('change', function(){update(1);});
-	});
-
-	// Start the clock
-	update(1);
 
 }
