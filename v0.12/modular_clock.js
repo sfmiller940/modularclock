@@ -50,13 +50,13 @@ function ModularClock(baseMax){
 			var tDate = new Date();
 			fnUnitsConvert = this.timeUnits.getTime[this.idx];
 			time = fnUnitsConvert(tDate).toString( this.base );
-			this.time = this.padTime(time, this.cols);
+			this.time = this.padTime(time, this.timeUnits.maxCols[this.idx]);
 			this.time_array = this.time.split('');
 		}
 		
 		// Pad a time string to appropriate length.	
 		this.padTime = function(t){
-			while (t.length < this.cols){
+			while (t.length < this.timeUnits.maxCols[this.idx]){
 				t = "0" + t;
 			}
 			return t
@@ -79,6 +79,7 @@ function ModularClock(baseMax){
 	var createChildDivs = function childDivsFn(id) {
 		var dv='';
 		for (r=keyArgs.rows - 1; r >=0; r--){
+			//for (c=keyArgs.timeUnits.maxCols[keyArgs.timeUnits.units.indexOf(id)] - 1; c>=0; c--){
 			for (c=keyArgs.cols - 1; c>=0; c--){
 				dv += '<div class="box box_' + id + ' row' + r + ' col'+c + '"></div>'
 			}
@@ -89,18 +90,18 @@ function ModularClock(baseMax){
 
 	// Add select inputs
 	var createSelects = function selectFn(id) {
-		var options
-		j=0
+		var options;
+		j=0;
 		for (i=keyArgs.baseMax; i>=keyArgs.baseMin; i--) {
 			options += '<option value="' + i + '" ' + ((j=0) ? ' selected="select"' : '' +'>') + i + '</option>';
-			j++
+			j++;
 		}
 		var dv = '<div class="box_mod"><select id="mod_' + id + '" class="selectpicker" data-style="btn-inverse">' + options + '</div>';
 		$('#'+id).append(dv);
 	}
 	keyArgs.timeUnitsLoop(createSelects);
 	
-	// Update clock on change of mod
+	// Update clock on change of base.
 	$(document).ready(function(e) {
 	  $('.selectpicker').selectpicker()
 						.on('change', function(){update(1);});
@@ -128,10 +129,6 @@ function ModularClock(baseMax){
 		
 		// Update divs
 		var divUpdate = function divUpdateFn(id){
-			/* Div classes are as follows on the UI:
-				[rowx coly] ...[rowx col0]
-				...
-				[row0 coly]	...	[row0 col0]   */
 
 			// Get keys values.
 			this.id = id;	
