@@ -16,8 +16,6 @@ function ModularClock(baseMax){
 			units: ['secs', 'mins', 'hours' /* ,'milliseconds', 'days', 'months',years'*/],
 			unitLimit: [59, 59, 23],
 			getTime: [function(x){return x.getSeconds();}, function(x){return x.getMinutes();}, function(x){return x.getHours();}]
-			// "getTime" property should probably instantiate a time class
-			// ... anything else we want to add that is unit-specific ... //
 		};
 
 		// For looping through units.
@@ -36,12 +34,12 @@ function ModularClock(baseMax){
 
 		// Keys dependent on time and active base.
 		this.getKeys = function(timeUnit){	
-					
+
 			// Package keys.
 			this.idx = this.timeUnits.units.indexOf(timeUnit);
 			this.base = $('#mod_' + timeUnit).val();							// Max rows, per base number
 			this.width = this.timeUnits.unitLimit[this.idx].toString( this.base ).length; 			// Max width, per time unit
-			
+
 			// Package time.
 			var tDate = new Date();
 			time = this.timeUnits.getTime[this.idx](tDate).toString( this.base );
@@ -63,7 +61,7 @@ function ModularClock(baseMax){
 	$("div div").addClass("third");
 
 	// Append child divs
-	var createChildDivs = function childDivsFn(id) {
+	var createChildDivs = function(id) {
 		var dv='';
 		for (r=keyArgs.rows - 1; r >=0; r--){
 			//for (c=keyArgs.timeUnits.maxCols[keyArgs.timeUnits.units.indexOf(id)] - 1; c>=0; c--){
@@ -76,7 +74,7 @@ function ModularClock(baseMax){
 	keyArgs.timeUnitsLoop(createChildDivs);
 
 	// Append select inputs
-	var createSelects = function selectFn(id) {
+	var createSelects = function(id) {
 		var options;
 		j=0;
 		for (i=keyArgs.baseMax; i>=keyArgs.baseMin; i--) {
@@ -91,17 +89,17 @@ function ModularClock(baseMax){
 	// Update clock on change of base.
 	$(document).ready(function(e) {
 	  $('.selectpicker').selectpicker()
-						.on('change', function(){update(1);});
+						.on('change', function(){updateClock(1);});
 	});
 
 	// Start the clock
-	update(1);
+	updateClock(1);
 
 
 	//
 	// Update Clock.
 	//
-	function update( refresh ){
+	function updateClock( refresh ){
 
 		// Clear the clock
 		if(clockID) {
@@ -110,41 +108,34 @@ function ModularClock(baseMax){
 		}
 		
 		// Reset classes on change of mod.
-		if (refresh == 1){
-			$('div.box').removeClass('box_on').removeClass('box_off');
-		}
+		if (refresh == 1){ $('div.box').removeClass('box_on').removeClass('box_off'); }
 		
 		// Update divs
-		var divUpdate = function divUpdateFn(id){
+		var divUpdate = function(id){
 
 			// Get keys values.
-			this.id = id;	
-			keyArgs.getKeys(this.id);
+			keyArgs.getKeys(id);
 			
 			// jQuery selector for below loops
-			this.selectClasses = function(row, column){
-				return $('#' + this.id + ' div.row' + row + '.col' + column);  
-			}
+			function selectClasses (row, column){ return $('#' + id + ' div.row' + row + '.col' + column); }
 						
 			// Darken all divs relevant to clock's base number
 			for (column=0; column < keyArgs.width; column++){
 				for (row=0; row < keyArgs.base - 1; row++){
-					$(this.selectClasses(row,column)).addClass("box_off");
+					$(selectClasses(row,column)).removeClass("box_on").addClass("box_off");
 				}
 			}
 			// Lighten divs according to time
 			for (column=0; column < keyArgs.width; column++){ 
 				for (row=0; row < parseInt(keyArgs.time_array[keyArgs.time_array.length - column - 1]); row++){
-					$(this.selectClasses(row,column)).removeClass("box_off").addClass("box_on");
+					$(selectClasses(row,column)).removeClass("box_off").addClass("box_on");
 				}
-			}
-			
+			}	
 		}
 		keyArgs.timeUnitsLoop(divUpdate);
 		
 		// Update clock in one second
-		clockID = setTimeout(function(){ update(0); }, 1000);
-
+		clockID = setTimeout(function(){ updateClock(0); }, 1000);
 	}
 
 
