@@ -78,8 +78,8 @@ function ModularClock(baseMax){
 	// Create child divs
 	var createChildDivs = function childDivsFn(id) {
 		var dv='';
-		for (r=keyArgs.rows; r>0; r--){
-			for (c=0; c<keyArgs.cols; c++){
+		for (r=keyArgs.rows - 1; r >=0; r--){
+			for (c=keyArgs.cols - 1; c>=0; c--){
 				dv += '<div class="box box_' + id + ' row' + r + ' col'+c + '"></div>'
 			}
 		}
@@ -129,9 +129,9 @@ function ModularClock(baseMax){
 		// Update divs
 		var divUpdate = function divUpdateFn(id){
 			/* Div classes are as follows on the UI:
-				[row(x) col0] ...[row(x) col(y)]
+				[rowx coly] ...[rowx col0]
 				...
-				[row1 col0]	...	[row1 col(y)]   */
+				[row0 coly]	...	[row0 col0]   */
 
 			// Get keys values.
 			this.id = id;	
@@ -143,15 +143,14 @@ function ModularClock(baseMax){
 			}
 						
 			// Darken all divs relevant to clock's base number
-			for (row=1; row < keyArgs.base; row++){
-				for (column=1; column <= keyArgs.width; column++){
-					c = keyArgs.cols - column										//columns count left-to-right, but the clock reads right-to-left.. reverse it.
-					$(this.selectClasses(row,c)).addClass("box_off");
+			for (column=0; column < keyArgs.width; column++){
+				for (row=0; row < keyArgs.base - 1; row++){
+					$(this.selectClasses(row,column)).addClass("box_off");
 				}
 			}
 			// Lighten divs according to time
-			for (column=0; column < keyArgs.time_array.length; column++){ 				
-				for (row=1; row <= parseInt(keyArgs.time_array[column]); row++){
+			for (column=0; column < keyArgs.width; column++){ 
+				for (row=0; row < parseInt(keyArgs.time_array[keyArgs.time_array.length - column - 1]); row++){
 					$(this.selectClasses(row,column)).removeClass("box_off").addClass("box_on");
 				}
 			}
