@@ -35,22 +35,20 @@ function ModularClock(baseMax){
 		}
 		this.cols = Math.max.apply(Math, this.timeUnits.maxCols); // We should use maxCols for each unit, not same cols for every unit.
 
-		// Various keys.
+		// Keys dependent on time and active base.
 		this.getKeys = function(timeUnit){	
 						
 			// Package keys.
 			this.idx = this.timeUnits.units.indexOf(timeUnit);
-			this.unitLimit = this.timeUnits.unitLimit[this.idx];
 			this.base = $('#mod_' + timeUnit).val();							// Max rows, per base number
-			this.width = this.unitLimit.toString( this.base ).length; 			// Max width, per time unit
+			this.width = this.timeUnits.unitLimit[this.idx].toString( this.base ).length; 			// Max width, per time unit
 			
 			// Package time.
 			var tDate = new Date();
 			fnUnitsConvert = this.timeUnits.getTime[this.idx];
 			time = fnUnitsConvert(tDate).toString( this.base );
 			while (time.length < this.timeUnits.maxCols[this.idx]) { time = "0" + time; }
-			this.time = time;
-			this.time_array = this.time.split('');
+			this.time_array = time.split('');
 		}
 		
 	}
