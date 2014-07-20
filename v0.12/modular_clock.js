@@ -60,11 +60,11 @@ function ModularClock(baseMax){
 	var clockID = 0;
 	var keyArgs = new this.keyArgs();
 
-	// Create unit container divs
+	// Append unit container divs
 	$('#modular_clock').append('<div id="hours"></div><div id="mins"></div><div id="secs"></div>')
 	$("div div").addClass("third");
 
-	// Create child divs
+	// Append child divs
 	var createChildDivs = function childDivsFn(id) {
 		var dv='';
 		for (r=keyArgs.rows - 1; r >=0; r--){
