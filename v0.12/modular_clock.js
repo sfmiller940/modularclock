@@ -13,9 +13,9 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 
 		// Class for time units
 		this.timeUnits = {
-			units: ['hours','mins','secs'], // milliseconds, days, months, years...
-			unitLimit: [23, 59, 59],
-			getTime: [function(x){return x.getHours();}, function(x){return x.getMinutes();}, function(x){return x.getSeconds();}],
+			units: ['months', 'days','hours','mins','secs'], // milliseconds, days, months, years...
+			unitLimit: [12, 31, 23, 59, 59],
+			getTime: [function(x){return (x.getMonth() + 1);}, function(x){return x.getDate();}, function(x){return x.getHours();}, function(x){return x.getMinutes();}, function(x){return x.getSeconds();}],
 		};
 
 		// For looping through units.
@@ -33,7 +33,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		this.timeUnits.boxHeight = ((this.timeUnits.unitHeight - 100) / this.rows) - (2 * innerMarg);
 		this.timeUnits.boxWidth = new Array();
 		this.timeUnits.maxCols = new Array();
-		for (i=0; i<this.timeUnits.unitLimit.length; i++) {
+		for (i=0; i<this.timeUnits.units.length; i++) {
 			this.timeUnits.maxCols[i] = this.timeUnits.unitLimit[i].toString(this.baseMin).length;
 			this.timeUnits.boxWidth[i] = (this.timeUnits.unitWidth / this.timeUnits.maxCols[i]) - ( 2 * innerMarg);
 		}

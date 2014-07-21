@@ -18,8 +18,16 @@ body{
 	border-radius: 10px;
 }
 
-#modular_clock #hours{
+#modular_clock #months{
+	background: rgba(256, 0, 256, 0.25);
+}
+
+#modular_clock #days{
 	background: rgba(256, 0, 0, 0.25);
+}
+
+#modular_clock #hours{
+	background: rgba(256, 256, 0, 0.25);
 }
 
 #modular_clock #mins{
@@ -27,7 +35,7 @@ body{
 }
 
 #modular_clock #secs{
-	background: rgba(0, 0, 256, 0.25);
+	background: rgba(0, 256, 256, 0.25);
 }
 
 #modular_clock div.unit div.box{
