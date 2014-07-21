@@ -38,7 +38,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 			this.timeUnits.boxWidth[i] = (this.timeUnits.unitWidth / this.timeUnits.maxCols[i]) - ( 2 * innerMarg);
 		}
 
-		// Variables dependent on selected mod.
+		// Active rows/cols depending on selected mod.
 		this.timeUnits.rows = new Array();
 		this.timeUnits.cols = new Array();
 		this.updateModVars = function(index, unit){	
@@ -46,7 +46,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 			this.timeUnits.cols[index] = this.timeUnits.unitLimit[index].toString( this.base ).length;
 		}
 		
-		// Creates and updates the unit time array. Should be multidimensional array in timeUnits?
+		// Creates and updates the unit time array. Should time_array be multidimensional array in timeUnits?
 		this.time_array = new Array();
 		this.updateTimeArray = function(index, unit){	
 			var tDate = new Date();
@@ -67,14 +67,14 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 	// Set height and width of clock div.
 	$(clockDivID).css({ 'width': clockWidth + 'px', 'height': clockHeight + 'px' });
 
-	// Append unit container divs
+	// Append unit container divs and css
 	keyArgs.timeUnitsLoop( function(index, unit){
 			$(clockDivID).append('<div id="'+ unit +'">');
 	});
 	$(clockDivID + " div").css({ 'width': keyArgs.timeUnits.unitWidth + 'px', 'height': keyArgs.timeUnits.unitHeight + 'px', "margin" : outerMarg + 'px' });
 	$(clockDivID + " div").addClass("unit");
 
-	// Append child divs
+	// Append child divs and css
 	keyArgs.timeUnitsLoop( function(index, unit) {
 		var dv='';
 		for (r=keyArgs.maxRows - 1; r >=0; r--){
@@ -86,7 +86,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		$(clockDivID + " #"+ unit + " .box").css({ 'width': keyArgs.timeUnits.boxWidth[index] + 'px', 'height': keyArgs.timeUnits.boxHeight + 'px', "margin" : innerMarg + 'px' });
 	});
 
-	// Append select inputs
+	// Append select inputs and css
 	keyArgs.timeUnitsLoop( function(index, unit) {
 		var options;
 		j=0;
@@ -98,12 +98,12 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		$(clockDivID + ' #'+ unit).append(dv);
 	});
 	
-	// Update clock on change of base.
+	// Refresh clock on change of base.
 	$(document).ready(function(e) {
 		$('.selectpicker').selectpicker().on('change', function(){ updateClock(1); });
 	});
 
-	// Start the clock
+	// Refresh the clock
 	updateClock(1);
 
 
@@ -118,7 +118,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		  this.timerID  = 0;
 		}
 		
-		// Reset classes and update modVars on change of mod.
+		// Reset classes and update rows/cols on change of mod.
 		if (refresh == 1){
 			$('div.box').removeClass('box_on').removeClass('box_off');
 			keyArgs.timeUnitsLoop(function(index,unit){keyArgs.updateModVars(index,unit);});
