@@ -21,7 +21,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		// For looping through units.
 		this.timeUnitsLoop = function(func){
 			$.each(this.timeUnits.units, function(index, unit) { 	
-				func(unit);
+				func(index, unit);
 			});
 		}
 		
@@ -66,26 +66,26 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 	$(clockDivID).css({ 'width': clockWidth + 'px', 'height': clockHeight + 'px' });
 
 	// Append unit container divs
-	keyArgs.timeUnitsLoop( function(unit){
+	keyArgs.timeUnitsLoop( function(index, unit){
 			$(clockDivID).append('<div id="'+ unit +'">');
 	});
 	$(clockDivID + " div").css({ 'width': keyArgs.timeUnits.unitWidth + 'px', 'height': keyArgs.timeUnits.unitHeight + 'px', "margin" : outerMarg + 'px' });
 	$(clockDivID + " div").addClass("unit");
 
 	// Append child divs
-	keyArgs.timeUnitsLoop( function(unit) {
+	keyArgs.timeUnitsLoop( function(index, unit) {
 		var dv='';
 		for (r=keyArgs.rows - 1; r >=0; r--){
-			for (c=keyArgs.timeUnits.maxCols[keyArgs.timeUnits.units.indexOf(unit)] - 1; c>=0; c--){
+			for (c=keyArgs.timeUnits.maxCols[index] - 1; c>=0; c--){
 				dv += '<div class="box box_' + unit + ' row' + r + ' col'+c + '"></div>'
 			}
 		}
 		$(clockDivID + ' #' + unit).append(dv)
-		$(clockDivID + " #"+ unit + " .box").css({ 'width': keyArgs.timeUnits.boxWidth[keyArgs.timeUnits.units.indexOf(unit)] + 'px', 'height': keyArgs.timeUnits.boxHeight + 'px', "margin" : innerMarg + 'px' });
+		$(clockDivID + " #"+ unit + " .box").css({ 'width': keyArgs.timeUnits.boxWidth[index] + 'px', 'height': keyArgs.timeUnits.boxHeight + 'px', "margin" : innerMarg + 'px' });
 	});
 
 	// Append select inputs
-	keyArgs.timeUnitsLoop( function(unit) {
+	keyArgs.timeUnitsLoop( function(index, unit) {
 		var options;
 		j=0;
 		for (i=keyArgs.baseMax; i>=keyArgs.baseMin; i--) {
@@ -120,7 +120,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		if (refresh == 1){ $('div.box').removeClass('box_on').removeClass('box_off'); }
 		
 		// Update divs
-		keyArgs.timeUnitsLoop( function(unit){
+		keyArgs.timeUnitsLoop( function(index, unit){
 
 			// Get keys values.
 			keyArgs.getUnitVars(unit);
