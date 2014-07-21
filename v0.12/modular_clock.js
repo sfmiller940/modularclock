@@ -38,7 +38,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 			this.timeUnits.boxWidth[i] = (this.timeUnits.unitWidth / this.timeUnits.maxCols[i]) - ( 2 * innerMarg);
 		}
 
-		// Active rows/cols depending on selected mod.
+		// Active mod/cols depending on selected mod.
 		this.timeUnits.mod = new Array();
 		this.timeUnits.cols = new Array();
 		this.updateModVars = function(index, unit){	
@@ -118,11 +118,11 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		  this.timerID  = 0;
 		}
 		
-		// Reset classes and update rows/cols on change of mod.
+		// Reset box classes and update rows/cols on change of mod.
 		if (refresh == 1){
 			$('div.box').removeClass('box_on').removeClass('box_off');
-			keyArgs.timeUnitsLoop(function(index,unit){keyArgs.updateModVars(index,unit);});
-			}
+			keyArgs.timeUnitsLoop( function(index,unit){ keyArgs.updateModVars(index,unit); });
+		}
 		
 		// Update divs
 		keyArgs.timeUnitsLoop( function(index, unit){
