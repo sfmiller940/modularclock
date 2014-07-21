@@ -8,7 +8,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		
 		// Basic variables.
 		this.baseMin = 2;
-		this.baseMax = baseMax; // Doesn't work yet, except for 10.
+		this.baseMax = baseMax; // Doesn't work for greater than 10.
 		this.rows = baseMax - 1;
 
 		// Class for time units
@@ -30,7 +30,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		this.timeUnits.unitHeight = clockHeight - (2 * outerMarg);
 
 		// Calculate # of columns and box height/width for each unit
-		this.timeUnits.boxHeight = ((this.timeUnits.unitHeight - 50) / this.rows) - (2 * innerMarg);
+		this.timeUnits.boxHeight = ((this.timeUnits.unitHeight - 100) / this.rows) - (2 * innerMarg);
 		this.timeUnits.boxWidth = new Array();
 		this.timeUnits.maxCols = new Array();
 		for (i=0; i<this.timeUnits.unitLimit.length; i++) {
