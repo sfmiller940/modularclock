@@ -50,7 +50,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 			var tDate = new Date();
 			time = this.timeUnits.getTime[this.idx](tDate).toString( this.base );
 			while (time.length < this.timeUnits.maxCols[this.idx]) { time = "0" + time; }
-			this.time_array = time.split('');
+			this.time_array = time.split('').reverse();
 		}
 
 	}
@@ -131,7 +131,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 			// Darken or lighten divs according to time
 			for (column=0; column < keyArgs.width; column++){ 
 				for (row=0; row < keyArgs.base - 1; row++){
-					if( row < parseInt(keyArgs.time_array[keyArgs.time_array.length - column - 1]) )
+					if( row < parseInt(keyArgs.time_array[ column ]) )
 						{ $(selectClasses(row,column)).removeClass("box_off").addClass("box_on"); }
 					else{ $(selectClasses(row,column)).removeClass("box_on").addClass("box_off"); }
 				}
