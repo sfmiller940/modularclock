@@ -128,16 +128,12 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 			// jQuery selector for below loops
 			function selectClasses (row, column){ return $(clockDivID + ' #' + unit + ' div.row' + row + '.col' + column); }
 						
-			// Darken all divs relevant to clock's base number
-			for (column=0; column < keyArgs.width; column++){
-				for (row=0; row < keyArgs.base - 1; row++){
-					$(selectClasses(row,column)).removeClass("box_on").addClass("box_off");
-				}
-			}
-			// Lighten divs according to time
+			// Darken or lighten divs according to time
 			for (column=0; column < keyArgs.width; column++){ 
-				for (row=0; row < parseInt(keyArgs.time_array[keyArgs.time_array.length - column - 1]); row++){
-					$(selectClasses(row,column)).removeClass("box_off").addClass("box_on");
+				for (row=0; row < keyArgs.base - 1; row++){
+					if( row < parseInt(keyArgs.time_array[keyArgs.time_array.length - column - 1]) )
+						{ $(selectClasses(row,column)).removeClass("box_off").addClass("box_on"); }
+					else{ $(selectClasses(row,column)).removeClass("box_on").addClass("box_off"); }
 				}
 			}	
 		});
