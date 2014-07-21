@@ -39,11 +39,11 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		}
 
 		// Variables dependent on active base.
-		this.timeUnits.base = new Array();
+		this.timeUnits.mod = new Array();
 		this.timeUnits.width = new Array();
 		this.updateModVars = function(index, unit){	
 			// Package keys. Should be part of timeUnits, updated on change of mod?
-			this.timeUnits.base[index] = $('#mod_' + unit).val();							// Max rows, per base number
+			this.timeUnits.mod[index] = $('#mod_' + unit).val();							// Max rows, per base number
 			this.timeUnits.width[index] = this.timeUnits.unitLimit[index].toString( this.base ).length; 			// Max width, per time unit
 		}
 		
@@ -136,7 +136,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 						
 			// Darken or lighten divs according to time
 			for (column=0; column < keyArgs.timeUnits.width[index]; column++){ 
-				for (row=0; row < keyArgs.timeUnits.base[index] - 1; row++){
+				for (row=0; row < keyArgs.timeUnits.mod[index] - 1; row++){
 					if( row < parseInt(keyArgs.time_array[ column ]) )
 						{ $(selectClasses(row,column)).removeClass("box_off").addClass("box_on"); }
 					else{ $(selectClasses(row,column)).removeClass("box_on").addClass("box_off"); }
