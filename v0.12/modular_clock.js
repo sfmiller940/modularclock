@@ -62,7 +62,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 	//
 	// Initiate Clock
 	//
-	var timerID = 0;
+	this.timerID = 0;
 	var keyArgs = new this.keyArgs();
 
 	// Set height and width of clock div.
@@ -114,9 +114,9 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 	function updateClock( refresh ){
 
 		// Clear the timer
-		if(timerID) {
-		  clearTimeout(timerID);
-		  timerID  = 0;
+		if(this.timerID) {
+		  clearTimeout(this.timerID);
+		  this.timerID  = 0;
 		}
 		
 		// Reset classes and update modVars on change of mod.
@@ -139,13 +139,14 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 				for (row=0; row < keyArgs.timeUnits.mod[index] - 1; row++){
 					if( row < parseInt(keyArgs.time_array[ column ]) )
 						{ $(selectClasses(row,column)).removeClass("box_off").addClass("box_on"); }
-					else{ $(selectClasses(row,column)).removeClass("box_on").addClass("box_off"); }
+					else
+						{ $(selectClasses(row,column)).removeClass("box_on").addClass("box_off"); }
 				}
 			}	
 		});
 		
 		// Update clock in one second
-		timerID = setTimeout(function(){ updateClock(0); }, 1000);
+		this.timerID = setTimeout(function(){ updateClock(0); }, 1000);
 	}
 
 
