@@ -41,8 +41,10 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		// Active mod/cols depending on selected mod.
 		this.timeUnits.mod = new Array();
 		this.timeUnits.cols = new Array();
+		this.timeUnits.rows = new Array();
 		this.updateModVars = function(index, unit){	
 			this.timeUnits.mod[index] = $('#mod_' + unit).val();
+			this.timeUnits.rows[index] = this.timeUnits.mod[index] - 1;
 			this.timeUnits.cols[index] = this.timeUnits.unitLimit[index].toString( this.timeUnits.mod[index] ).length;
 		}
 		
@@ -135,7 +137,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 						
 			// Darken or lighten divs according to time
 			for (col=0; col < keyArgs.timeUnits.cols[index]; col++){ 
-				for (row=0; row < ( keyArgs.timeUnits.mod[index] - 1 ) ; row++){
+				for (row=0; row < keyArgs.timeUnits.rows[index]; row++){
 					if( row < parseInt(keyArgs.time_array[ col ]) )
 						{ $(selectClasses(row,col)).removeClass("box_off").addClass("box_on"); }
 					else
