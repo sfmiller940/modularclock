@@ -26,8 +26,8 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		}
 		
 		// Calculate height/width of unit divs.
-		this.timeUnits.unitWidth = (clockWidth / this.timeUnits.units.length) - ( 2 * outerMarg);
-		this.timeUnits.unitHeight = clockHeight - (2 * outerMarg);
+		this.timeUnits.unitWidth = (2 * clockWidth / this.timeUnits.units.length) - ( 2 * outerMarg);
+		this.timeUnits.unitHeight = (clockHeight /2) - (2 * outerMarg);
 
 		// Calculate # of columns and box height/width for each unit
 		this.timeUnits.boxHeight = ((this.timeUnits.unitHeight - 100) / this.rows) - (2 * innerMarg);
