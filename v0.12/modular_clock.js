@@ -30,7 +30,6 @@ function ModularClock(baseMax){
 		for (i=0; i<this.timeUnits.unitLimit.length; i++) {
 			this.timeUnits.maxCols[i] = this.timeUnits.unitLimit[i].toString(this.baseMin).length;
 		}
-		this.cols = Math.max.apply(Math, this.timeUnits.maxCols); // We should use maxCols for each unit, not same cols for every unit.
 
 		// Keys dependent on time and active base.
 		this.getKeys = function(timeUnit){	
@@ -64,8 +63,7 @@ function ModularClock(baseMax){
 	var createChildDivs = function(id) {
 		var dv='';
 		for (r=keyArgs.rows - 1; r >=0; r--){
-			//for (c=keyArgs.timeUnits.maxCols[keyArgs.timeUnits.units.indexOf(id)] - 1; c>=0; c--){
-			for (c=keyArgs.cols - 1; c>=0; c--){
+			for (c=keyArgs.timeUnits.maxCols[keyArgs.timeUnits.units.indexOf(id)] - 1; c>=0; c--){
 				dv += '<div class="box box_' + id + ' row' + r + ' col'+c + '"></div>'
 			}
 		}
