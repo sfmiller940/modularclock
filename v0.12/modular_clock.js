@@ -12,9 +12,11 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		this.maxRows = baseMax - 1;
 
 		// Class for time units
+		var tDate = new Date();
+		maxYears = ( tDate.getFullYear() % 100 ) + 1;
 		this.timeUnits = {
 			units: ['years','months', 'days','hours','mins','secs'], // milliseconds are next.
-			unitLimit: [99, 12, 31, 23, 59, 59],
+			unitLimit: [maxYears, 12, 31, 23, 59, 59],
 			getTime: [function(x){return (x.getFullYear() % 100);}, function(x){return (x.getMonth() + 1);}, function(x){return x.getDate();}, function(x){return x.getHours();}, function(x){return x.getMinutes();}, function(x){return x.getSeconds();}],
 		};
 
