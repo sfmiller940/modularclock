@@ -9,7 +9,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		// Base constants
 		this.baseMin = 2;
 		this.baseMax = baseMax; // Doesn't work for greater than 10.
-		this.rows = baseMax - 1;
+		this.maxRows = baseMax - 1;
 
 		// Class for time units
 		this.timeUnits = {
@@ -30,7 +30,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		this.timeUnits.unitHeight = (clockHeight /2) - (2 * outerMarg);
 
 		// Calculate # of columns and box height/width for each unit
-		this.timeUnits.boxHeight = ((this.timeUnits.unitHeight - 100) / this.rows) - (2 * innerMarg);
+		this.timeUnits.boxHeight = ((this.timeUnits.unitHeight - 100) / this.maxRows) - (2 * innerMarg);
 		this.timeUnits.boxWidth = new Array();
 		this.timeUnits.maxCols = new Array();
 		for (i=0; i<this.timeUnits.units.length; i++) {
@@ -38,18 +38,17 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 			this.timeUnits.boxWidth[i] = (this.timeUnits.unitWidth / this.timeUnits.maxCols[i]) - ( 2 * innerMarg);
 		}
 
-		// Variables dependent on active base.
-		this.timeUnits.mod = new Array();
-		this.timeUnits.width = new Array();
+		// Variables dependent on selected mod.
+		this.timeUnits.rows = new Array();
+		this.timeUnits.cols = new Array();
 		this.updateModVars = function(index, unit){	
-			// Package keys. Should be part of timeUnits, updated on change of mod?
-			this.timeUnits.mod[index] = $('#mod_' + unit).val();							// Max rows, per base number
-			this.timeUnits.width[index] = this.timeUnits.unitLimit[index].toString( this.base ).length; 			// Max width, per time unit
+			this.timeUnits.rows[index] = $('#mod_' + unit).val() - 1;
+			this.timeUnits.cols[index] = this.timeUnits.unitLimit[index].toString( this.base ).length;
 		}
 		
-		// Updates unit time array.
+		// Creates and updates the unit time array. Should be multidimensional array in timeUnits?
+		this.time_array = new Array();
 		this.updateTimeArray = function(index, unit){	
-			// Package time.
 			var tDate = new Date();
 			time = this.timeUnits.getTime[index](tDate).toString( this.base );
 			while (time.length < this.timeUnits.maxCols[index]) { time = "0" + time; }
@@ -78,7 +77,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 	// Append child divs
 	keyArgs.timeUnitsLoop( function(index, unit) {
 		var dv='';
-		for (r=keyArgs.rows - 1; r >=0; r--){
+		for (r=keyArgs.maxRows - 1; r >=0; r--){
 			for (c=keyArgs.timeUnits.maxCols[index] - 1; c>=0; c--){
 				dv += '<div class="box box_' + unit + ' row' + r + ' col'+c + '"></div>'
 			}
@@ -132,15 +131,15 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 			keyArgs.updateTimeArray(index,unit);
 			
 			// jQuery selector for below loops
-			function selectClasses (row, column){ return $(clockDivID + ' #' + unit + ' div.row' + row + '.col' + column); }
+			function selectClasses (row, col){ return $(clockDivID + ' #' + unit + ' div.row' + row + '.col' + col); }
 						
 			// Darken or lighten divs according to time
-			for (column=0; column < keyArgs.timeUnits.width[index]; column++){ 
-				for (row=0; row < keyArgs.timeUnits.mod[index] - 1; row++){
-					if( row < parseInt(keyArgs.time_array[ column ]) )
-						{ $(selectClasses(row,column)).removeClass("box_off").addClass("box_on"); }
+			for (col=0; col < keyArgs.timeUnits.cols[index]; col++){ 
+				for (row=0; row < keyArgs.timeUnits.rows[index] ; row++){
+					if( row < parseInt(keyArgs.time_array[ col ]) )
+						{ $(selectClasses(row,col)).removeClass("box_off").addClass("box_on"); }
 					else
-						{ $(selectClasses(row,column)).removeClass("box_on").addClass("box_off"); }
+						{ $(selectClasses(row,col)).removeClass("box_on").addClass("box_off"); }
 				}
 			}	
 		});
