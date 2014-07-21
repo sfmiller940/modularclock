@@ -18,6 +18,10 @@ body{
 	border-radius: 10px;
 }
 
+#modular_clock #years{
+	background: rgba(0, 0, 256, 0.25);
+}
+
 #modular_clock #months{
 	background: rgba(256, 0, 256, 0.25);
 }
