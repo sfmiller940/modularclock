@@ -1,4 +1,4 @@
-function ModularClock(clockDivID, baseMax, clockwidth, clockheight, outterMarg, innerMarg){
+function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, innerMarg){
 
 
 	//
@@ -8,7 +8,7 @@ function ModularClock(clockDivID, baseMax, clockwidth, clockheight, outterMarg, 
 		
 		// Basic variables.
 		this.baseMin = 2;
-		this.baseMax = baseMax; // Doesn't work except for 10 yet.
+		this.baseMax = baseMax; // Doesn't work yet, except for 10.
 		this.rows = baseMax - 1;
 
 		// Class for time units
@@ -32,11 +32,11 @@ function ModularClock(clockDivID, baseMax, clockwidth, clockheight, outterMarg, 
 		}
 
 		// Variables dependent on time and active base.
-		this.getUnitVars = function(timeUnit){	
+		this.getUnitVars = function(unit){	
 
 			// Package keys. Should be part of timeUnits, updated on change of mod?
-			this.idx = this.timeUnits.units.indexOf(timeUnit);
-			this.base = $('#mod_' + timeUnit).val();							// Max rows, per base number
+			this.idx = this.timeUnits.units.indexOf(unit);
+			this.base = $('#mod_' + unit).val();							// Max rows, per base number
 			this.width = this.timeUnits.unitLimit[this.idx].toString( this.base ).length; 			// Max width, per time unit
 
 			// Package time.
@@ -55,11 +55,17 @@ function ModularClock(clockDivID, baseMax, clockwidth, clockheight, outterMarg, 
 	var timerID = 0;
 	var keyArgs = new this.keyArgs();
 
+	// Set height and width of clock div.
+	$(clockDivID).css({ 'width': clockWidth + 'px', 'height': clockHeight + 'px' });
+
 	// Append unit container divs
 	keyArgs.timeUnitsLoop( function(unit){
 			$(clockDivID).append('<div id="'+ unit +'">');
 	});
-	$(clockDivID + " div").addClass("third");
+	var unitWidth = (clockWidth / keyArgs.timeUnits.units.length) - ( 2 * outerMarg);
+	var unitHeight = clockHeight - (2 * outerMarg);
+	$(clockDivID + " div").css({ 'width': unitWidth + 'px', 'height': unitHeight + 'px', "margin" : outerMarg + 'px' });
+	$(clockDivID + " div").addClass("unit");
 
 	// Append child divs
 	keyArgs.timeUnitsLoop( function(unit) {
@@ -70,6 +76,10 @@ function ModularClock(clockDivID, baseMax, clockwidth, clockheight, outterMarg, 
 			}
 		}
 		$(clockDivID + ' #' + unit).append(dv)
+		var boxWidth = (unitWidth / keyArgs.timeUnits.maxCols[keyArgs.timeUnits.units.indexOf(unit)]) - ( 2 * innerMarg);
+		var boxHeight = ((unitHeight - 100) / keyArgs.rows) - (2 * innerMarg);
+		$(clockDivID + " #"+ unit + " .box").css({ 'width': boxWidth + 'px', 'height': boxHeight + 'px', "margin" : innerMarg + 'px' });
+
 	});
 
 	// Append select inputs
