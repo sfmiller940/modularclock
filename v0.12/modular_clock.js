@@ -39,18 +39,18 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		}
 
 		// Active rows/cols depending on selected mod.
-		this.timeUnits.rows = new Array();
+		this.timeUnits.mod = new Array();
 		this.timeUnits.cols = new Array();
 		this.updateModVars = function(index, unit){	
-			this.timeUnits.rows[index] = $('#mod_' + unit).val() - 1;
-			this.timeUnits.cols[index] = this.timeUnits.unitLimit[index].toString( this.base ).length;
+			this.timeUnits.mod[index] = $('#mod_' + unit).val();
+			this.timeUnits.cols[index] = this.timeUnits.unitLimit[index].toString( this.timeUnits.mod[index] ).length;
 		}
 		
 		// Creates and updates the unit time array. Should time_array be multidimensional array in timeUnits?
 		this.time_array = new Array();
 		this.updateTimeArray = function(index, unit){	
 			var tDate = new Date();
-			time = this.timeUnits.getTime[index](tDate).toString( this.base );
+			time = this.timeUnits.getTime[index](tDate).toString( this.timeUnits.mod[index] );
 			while (time.length < this.timeUnits.maxCols[index]) { time = "0" + time; }
 			this.time_array = time.split('').reverse();
 		}
@@ -135,7 +135,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 						
 			// Darken or lighten divs according to time
 			for (col=0; col < keyArgs.timeUnits.cols[index]; col++){ 
-				for (row=0; row < keyArgs.timeUnits.rows[index] ; row++){
+				for (row=0; row < ( keyArgs.timeUnits.mod[index] - 1 ) ; row++){
 					if( row < parseInt(keyArgs.time_array[ col ]) )
 						{ $(selectClasses(row,col)).removeClass("box_off").addClass("box_on"); }
 					else
