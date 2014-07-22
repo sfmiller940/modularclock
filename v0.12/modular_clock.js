@@ -95,8 +95,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		for (i=keyArgs.baseMax; i>=keyArgs.baseMin; i--) {
 			options += '<option value="' + i + '" ' + ((i==keyArgs.baseMax) ? ' selected="select"' : '') +'>' + i + '</option>';
 		}
-		dv = '<div class="box_mod"><select id="mod_' + unit + '" class="selectpicker" data-style="btn-inverse">' + options + '</div>';
-		$(clockDivID + ' #'+ unit).append(dv);
+		$(clockDivID + ' #'+ unit).append('<div class="box_mod"><select id="mod_' + unit + '" class="selectpicker" data-style="btn-inverse">' + options + '</div>');
 
 	});
 	
