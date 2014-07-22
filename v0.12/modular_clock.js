@@ -71,15 +71,16 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 	// Set height and width of clock div.
 	$(clockDivID).css({ 'width': clockWidth + 'px', 'height': clockHeight + 'px' });
 
-	// Append unit container divs and css
-	keyArgs.timeUnitsLoop( function(index, unit){
-			$(clockDivID).append('<div id="'+ unit +'">');
-	});
-	$(clockDivID + " div").css({ 'width': keyArgs.timeUnits.unitWidth + 'px', 'height': keyArgs.timeUnits.unitHeight + 'px', "margin" : outerMarg + 'px' });
-	$(clockDivID + " div").addClass("unit");
-
-	// Append child divs and css
+	// Append unit divs.
 	keyArgs.timeUnitsLoop( function(index, unit) {
+	
+		// Append unit div and css
+		$(clockDivID).append('<div id="'+ unit +'">');
+		$(clockDivID + " #" + unit).css({ 'width': keyArgs.timeUnits.unitWidth + 'px', 'height': keyArgs.timeUnits.unitHeight + 'px', "margin" : outerMarg + 'px' });
+		$(clockDivID + " #" + unit).addClass("unit");
+
+
+		// Append box divs and css
 		var dv='';
 		for (r=keyArgs.maxRows - 1; r >=0; r--){
 			for (c=keyArgs.timeUnits.maxCols[index] - 1; c>=0; c--){
@@ -88,18 +89,15 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 		}
 		$(clockDivID + ' #' + unit).append(dv)
 		$(clockDivID + " #"+ unit + " .box").css({ 'width': keyArgs.timeUnits.boxWidth[index] + 'px', 'height': keyArgs.timeUnits.boxHeight + 'px', "margin" : innerMarg + 'px' });
-	});
-
-	// Append select inputs and css
-	keyArgs.timeUnitsLoop( function(index, unit) {
+		
+		// Append select
 		var options;
-		j=0;
 		for (i=keyArgs.baseMax; i>=keyArgs.baseMin; i--) {
-			options += '<option value="' + i + '" ' + ((j=0) ? ' selected="select"' : '' +'>') + i + '</option>';
-			j++;
+			options += '<option value="' + i + '" ' + ((i==keyArgs.baseMax) ? ' selected="select"' : '') +'>' + i + '</option>';
 		}
-		var dv = '<div class="box_mod"><select id="mod_' + unit + '" class="selectpicker" data-style="btn-inverse">' + options + '</div>';
+		dv = '<div class="box_mod"><select id="mod_' + unit + '" class="selectpicker" data-style="btn-inverse">' + options + '</div>';
 		$(clockDivID + ' #'+ unit).append(dv);
+
 	});
 	
 	// Refresh clock on change of base.
