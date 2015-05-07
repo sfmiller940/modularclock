@@ -101,7 +101,7 @@ function ModularClock(clockDivID, baseMax, clockWidth, clockHeight, outerMarg, i
 	
 	// Refresh clock on change of base.
 	$(document).ready(function(e) {
-		$('.selectpicker').selectpicker().on('change', function(){ updateClock(1); });
+		$('select').on('change', function(){ updateClock(1); });
 	});
 
 	// Refresh the clock
