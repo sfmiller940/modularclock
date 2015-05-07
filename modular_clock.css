@@ -69,3 +69,7 @@ body{
 #modular_clock .bootstrap-select {
 	width: 60px !important;
 }
+
+select {
+	width: 60px !important;
+}
